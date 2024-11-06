@@ -6,22 +6,25 @@ import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useEffect } from "react";
 
-
-export default function Home() {
-
+const Home: React.FC = () => {
   const { user } = useUser();
   const createUser = useMutation(api.user.createUser);
 
   useEffect(() => {
-    user && CheckUser();
+    if (user) {
+      checkUser();
+    }
   }, [user]);
-  const CheckUser = async () => {
-    const result = await createUser({
-      email: user?.primaryEmailAddress?.emailAddress || '',
-      imageUrl: user?.imageUrl || '',
-      userName: user?.fullName || '',
-    })
-    console.log(result)
+
+  const checkUser = async () => {
+    if (user) {
+      const result = await createUser({
+        email: user.primaryEmailAddress?.emailAddress || '',
+        imageUrl: user.imageUrl || '',
+        userName: user.fullName || '',
+      });
+      console.log(result);
+    }
   };
 
   return (
@@ -30,4 +33,6 @@ export default function Home() {
       <UserButton />
     </div>
   );
-}
+};
+
+export default Home;
