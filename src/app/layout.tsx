@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import {Oswald} from 'next/font/google'
 import "./globals.css";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -14,16 +15,11 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
-const suisseIntl = localFont({
-  src: "./fonts/SuisseIntl.woff",
-  variable: "--font-suisse-intl",
-  weight: "100 900",
-});
-const lugife = localFont({
-  src: './fonts/lugife.otf',
-  variable: '--font-lugife',
-  weight: '400 700',
-});
+const oswald = Oswald({
+  variable: "--font-oswald",
+  subsets: ["latin"],
+})
+
 
 export const metadata: Metadata = {
   title: "Textify - your documents, now conversational",
@@ -41,7 +37,7 @@ export default function RootLayout({
     <ClerkProvider>
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} $(suisseIntl.variable) antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ConvexClientProvider>{children}</ConvexClientProvider>
       </body>

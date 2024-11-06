@@ -26,7 +26,7 @@ const UploadPdf: React.FC<Props> = ({ children }) => {
             <div>
               <h2 className="mt-4 text-base md:text-lg font-medium text-left">Select Files to Upload</h2>
               <div className="mt-2 p-3 border border-gray-300 rounded-md bg-gray-50">
-                <input type="file" className="w-full cursor-pointer" />
+                <input type="file" className="w-full cursor-pointer" accept=".pdf, .doc, .docx"/>
               </div>
               <div className="mt-4">
                 <label className="block text-base font-medium mb-1 text-left">File Name</label>
@@ -39,7 +39,7 @@ const UploadPdf: React.FC<Props> = ({ children }) => {
           <DialogClose asChild>
             <Button variant="destructive" className="w-full sm:w-auto">Cancel</Button>
           </DialogClose>
-          <Button className="w-full sm:w-auto py-6 md:py-0">Upload</Button>
+          <Button className="w-full sm:w-auto py-6 sm:py-0">Upload</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
