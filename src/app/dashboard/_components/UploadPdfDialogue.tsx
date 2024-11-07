@@ -13,11 +13,12 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useMutation } from "convex/react";
+import { useAction, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { Loader2 } from "lucide-react";
+import { Loader2, UploadCloudIcon } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { useUser } from "@clerk/nextjs";
+import axios from "axios";
 
 type Props = { children: ReactNode };
 
@@ -25,8 +26,10 @@ const UploadPdf: React.FC<Props> = ({ children }) => {
   const generateUploadUrl = useMutation(api.messages.generateUploadUrl);
   const addFileEntryToDb = useMutation(api.messages.AddFileEntryToDb);
   const getFileUrl = useMutation(api.messages.getFileUrl);
+  const embedDocument = useAction(api.myActions.ingest);
   const user = useUser();
   const [file, setFile] = useState<File | null>(null);
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [fileName, setFileName] = useState("");
 
@@ -59,12 +62,27 @@ const UploadPdf: React.FC<Props> = ({ children }) => {
       createdBy: user?.user?.emailAddresses[0]?.emailAddress ?? "",
     });
     console.log(response);
+
+    // API CALL TO FETCH PDF PROCESSED DATA
+    const ApiResponse = await axios.get("/api/pdf-loader?pdfUrl=" + fileUrl);
+    console.log(ApiResponse.data.result);
+    await embedDocument({
+      fileId: fileId,
+      splitText: ApiResponse.data.result,
+    });
+
     setLoading(false);
+    setOpen(false);
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={open}>
+      <DialogTrigger asChild>
+        <Button onClick={() => setOpen(true)}>
+          <UploadCloudIcon className="w-4 h-4 mr-2" />
+          Upload PDF
+        </Button>
+      </DialogTrigger>
       <DialogContent className="w-full max-w-md p-4 md:max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-lg md:text-xl font-semibold text-center">
@@ -102,7 +120,11 @@ const UploadPdf: React.FC<Props> = ({ children }) => {
               Cancel
             </Button>
           </DialogClose>
-          <Button className="w-full sm:w-auto py-6 sm:py-0" onClick={OnUpload}>
+          <Button
+            className="w-full sm:w-auto py-6 sm:py-0"
+            onClick={OnUpload}
+            disabled={loading}
+          >
             {loading ? <Loader2 className="animate-spin" /> : "Upload"}
           </Button>
         </DialogFooter>

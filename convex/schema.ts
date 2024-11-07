@@ -8,11 +8,19 @@ export default defineSchema({
     userName: v.string(),
   }),
 
-  documents: defineTable({
+  pdfFiles: defineTable({
     fileId: v.string(),
     storageId: v.string(),
     fileName: v.string(),
     fileUrl: v.string(),
     createdBy: v.string(),
+  }),
+  documents: defineTable({
+    embedding: v.array(v.number()),
+    text: v.string(),
+    metadata: v.any(),
+  }).vectorIndex("byEmbedding", {
+    vectorField: "embedding",
+    dimensions: 1536,
   }),
 });
