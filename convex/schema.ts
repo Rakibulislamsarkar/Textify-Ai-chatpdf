@@ -7,4 +7,12 @@ export default defineSchema({
     imageUrl: v.string(),
     userName: v.string(),
   }),
+
+  documents: defineTable({
+    fileId: v.string(),
+    storageId: v.string(),
+    fileName: v.string(),
+    fileUrl: v.string(),
+    createdBy: v.string(),
+  }),
 });
